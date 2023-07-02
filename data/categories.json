@@ -1,0 +1,18 @@
+[
+    {
+       "id":1,
+       "category":"Punjabi"
+    },
+    {
+       "id":2,
+       "category":"Hindi"
+    },
+    {
+       "id":3,
+       "category":"English"
+    },
+    {
+      "id":4,
+      "category":"Other"
+    }
+ ]
