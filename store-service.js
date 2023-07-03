@@ -136,3 +136,8 @@ module.exports.getItemById = function (id) {
         }
     });
 };
+
+module.exports.playAudio = function(id) {
+    var audio = document.getElementById("audio" + id);
+    audio.play();
+  };

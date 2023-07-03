@@ -1,19 +1,103 @@
+<style>
+    .play-btn {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .play-btn:hover {
+        background: rgb(84, 197, 84);
+        padding: 8px;
+    }
+
+    .play-btn:active {
+        background-color: #ccc;
+        color: green;
+    }
+
+    .pause-btn {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .pause-btn:hover {
+        background: #d67272;
+        padding: 8px;
+    }
+
+    .pause-btn:active {
+        background-color: #ccc;
+        color: red;
+    }
+
+    .volume-slider {
+        width: 150px;
+        height: 10px;
+        background-color: #ccc;
+        border-radius: 5px;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .volume-slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .volume-slider::-ms-thumb {
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb:hover {
+        background-color: #ff0000;
+    }
+
+    .volume-slider::-moz-range-thumb:hover {
+        background-color: #ff0000;
+    }
+
+    .volume-slider::-ms-thumb:hover {
+        background-color: #ff0000;
+    }
+</style>
+
 <div class="row" id="row">
     <section class="main col-md-9">
         {{#if data.items}}
         {{#each data.items}}
-        <div class="row" style="background-color:yelow;">
-            <div id="img" style="width:200px; height:200px; margin-left:50px;">
-                <img src="{{featureImage}}" alt="feature Image" style="width:165px; height:120px;" />
+        <div class="row">
+            <div id="img" style="width: 200px; height: 200px; margin-left: 50px;">
+                <img src="{{featureImage}}" alt="feature Image" style="width: 165px; height: 120px;" />
             </div>
 
-            <h2 style="margin-top:-187px; margin-bottom:100px; margin-left:336px;"><strong>{{title}}</strong></h2>
+            <h2 style="margin-top: -187px; margin-bottom: 100px; margin-left: 336px;"><strong>{{title}}</strong></h2>
 
-            <div id="content" style="margin-top: -74px;margin-bottom: 60px; margin-left:369px;">
+            <div id="content" style="margin-top: -74px; margin-bottom: 60px; margin-left: 369px;">
                 <strong>Category:</strong> {{category}}<br />
-                <strong>Realeased on:</strong> {{postDate}}
+                <strong>Released on:</strong> {{postDate}}
             </div>
-
+            <audio id="audio{{id}}" src="{{audioUrl}}"></audio>
+            <button onclick="playAudio({{id}})" class="play-btn"><b>Play</b></button>
+            <button onclick="pauseAudio({{id}})" class="pause-btn"><b>Pause</b></button>
+            <input type="range" min="0" max="1" step="0.1" value="1" oninput="adjustVolume({{id}}, this.value)"
+                class="volume-slider">
         </div>
         {{/each}}
         {{else}}
@@ -28,33 +112,56 @@
         <br /><br />
         {{#if data.items}}
 
-        <div id="songs"
-            style="margin-top:-89%; margin-left:75%; display:table; padding:10px; border: 1px solid #ccc;  border-radius: 4px; ">
-            <h4
-                style="margin-top: 0; text-align: center; text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 15px #ffffff, 0 0 20px #00e6e6, 0 0 30px #00e6e6, 0 0 80px #00e6e6, 0 0 100px #00e6e6, 0 0 150px #00e6e6; font-size:25px">ITEMS</h4>
-
-
-            <ul class="list-group" style="list-style-type:none; padding:0; margin:0;">
-                {{#each data.items}}
-                <li style="display:table-row; "><a href="/shop/{{id}}?category={{../viewingCategory}}"
-                        class="list-group-item"
-                        style="color:antiquewhite; text-align:center; display: table-cell;padding: 5px;border-bottom: 1px solid #ccc;text-decoration: none;">{{title}}</a>
-                </li>
-                {{/each}}
-            </ul>
-        </div>
         {{/if}}
 
         {{#if data.categories}}
-        <div id="Categories" style="margin-top:4%; margin-left:75%;">
-            <h4>Categories</h4>
+        <div id="Categories"
+            style="position: fixed; top: 25%; width: 190px; left: 75%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; background-color: black; z-index: 999;">
+            <h4
+                style="margin-top: 0; font-size: 25px; text-align: center; text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 15px #ffffff, 0 0 20px #00e6e6, 0 0 30px #00e6e6, 0 0 80px #00e6e6, 0 0 100px #00e6e6, 0 0 150px #00e6e6;">
+                Categories</h4>
 
-            <ul class="list-group">
+            <ul class="list-group" style="list-style-type: none; padding: 0; margin: 0; text-align: center">
                 {{#each data.categories}}
-                <li><a href="/shop?category={{id}}" class="list-group-item">{{category}}</a></li>
+                <li style="display: table-row; "><a href="/shop?category={{id}}" class="list-group-item"
+                        style="color: #ccc; font-size: 20px; display: table-cell; padding: 5px; border-bottom: 1px solid #ccc; text-decoration: none;">{{category}}</a>
+                </li>
                 {{/each}}
             </ul>
         </div>
         {{/if}}
     </aside>
 </div>
+
+<script>
+    function playAudio(id) {
+        var audio = document.getElementById("audio" + id);
+        audio.play();
+
+        // Add cool effects when audio starts playing
+        var playBtn = document.querySelector(`button[data-id="${id}"].play-btn`);
+        var pauseBtn = document.querySelector(`button[data-id="${id}"].pause-btn`);
+        var row = playBtn.parentNode;
+        row.style.backgroundColor = "orange";
+        playBtn.style.display = "none";
+        pauseBtn.style.display = "inline-block";
+    }
+
+    function pauseAudio(id) {
+        var audio = document.getElementById("audio" + id);
+        audio.pause();
+
+        // Reset effects when audio is paused
+        var playBtn = document.querySelector(`button[data-id="${id}"].play-btn`);
+        var pauseBtn = document.querySelector(`button[data-id="${id}"].pause-btn`);
+        var row = pauseBtn.parentNode;
+        row.style.backgroundColor = "yellow";
+        pauseBtn.style.display = "none";
+        playBtn.style.display = "inline-block";
+    }
+
+    function adjustVolume(id, value) {
+        var audio = document.getElementById("audio" + id);
+        audio.volume = value;
+    }
+</script>
